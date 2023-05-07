@@ -1,0 +1,40 @@
+[{
+
+    "noRuas": 15,
+    "namaRuas": "Babadan-Karanglo",
+    "panjang": 1,
+    "lebar": 5,
+    "fungsi": "",
+    "image" : "https://sleman.wastuanopama.com/uploads/foto/jalan/2021/15/TimePhoto_20211215_1532231.jpg",
+    "lhr": 919,
+    "jembatan": 1,
+    "kecamatan" : "Kalasan",
+    "pangkal" : "4/4",
+    "ujung" : "Kalasan",
+    "pangkalLat" : -7.7414029,
+    "pangkalLong" : 110.4614782,
+    "ujungLat" : -7.7393405,
+    "ujungLong": 110.4521871
+  
+    
+  },
+
+  {
+    "noRuas": 119,
+    "image" : "https://sleman.wastuanopama.com/uploads/foto/jalan/2021/119/TimePhoto_20211009_1511091.jpg",
+    "namaRuas": "Tlacap-Brayut",
+    "panjang": 1.8,
+    "lebar": 3,
+    "fungsi": "",
+    "lhr": 6215,
+    "jembatan": 0,
+    "kecamatan" : "Sleman dan Ngaglik",
+    "pangkal" : "118/117/118",
+    "ujung" : "Sleman dan Ngaglik",
+    "pangkalLat" : -7.7192631,
+    "pangkalLong" : 110.3688294,
+    "ujungLat" : -7.7039374,
+    "ujungLong": 110.3748322
+  }
+  
+]
