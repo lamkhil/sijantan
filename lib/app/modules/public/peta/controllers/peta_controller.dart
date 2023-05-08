@@ -18,7 +18,7 @@ import '../../../../global/utils/helper.dart';
 class PetaController extends GetxController {
   Rx<KondisiJalan?> selectedJalan = Rx(null);
   Rx<Jembatan?> selectedJembatan = Rx(null);
-  Rx<TaggedPolyline?> selectedPoly = Rx(null);
+  Rx<List<TaggedPolyline>?> selectedPoly = Rx(null);
   RxList<int> generated = RxList([]);
 
   var polyLines =
@@ -201,7 +201,8 @@ class PetaController extends GetxController {
       Get.toNamed(Routes.DETAIL_JALAN,
           arguments: DetailJalanArgument(
               noRuas: selectedJalan.value!.noRuas!,
-              jalan: selectedJalan.value!));
+              jalan: selectedJalan.value!,
+              poly: selectedPoly.value));
     } else if (selectedJembatan.value != null) {
       Get.toNamed(Routes.DETAIL_JEMBATAN,
           arguments: DetailJembatanArgument(
@@ -212,8 +213,9 @@ class PetaController extends GetxController {
 
   selectJalan(List<TaggedPolyline> polylines) {
     clearPop();
-    selectedPoly.value =
-        polyLines.where((element) => polylines.first.tag == element.tag).first;
+    selectedPoly.value = coloredPolylines
+        .where((element) => polylines.first.tag == element.tag)
+        .toList();
     var temp =
         Get.find<CoreController>().kondisiJalanGroupedByTahun.keys.toList();
     var jalanBaru = temp.map((e) => int.parse(e)).toList();

@@ -17,8 +17,9 @@ import '../../../../../global/utils/helper.dart';
 class DetailJalanArgument {
   String noRuas;
   KondisiJalan jalan;
+  List<TaggedPolyline>? poly;
 
-  DetailJalanArgument({required this.noRuas, required this.jalan});
+  DetailJalanArgument({required this.noRuas, required this.jalan, this.poly});
 }
 
 class DetailJalanController extends GetxController

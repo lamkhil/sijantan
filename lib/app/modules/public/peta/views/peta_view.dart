@@ -122,42 +122,53 @@ class PetaView extends GetView<PetaController> {
                         // Will only render visible polylines, increasing performance
                         polylineCulling: true,
                         pointerDistanceTolerance: 20,
-                        polylines: List.generate(
-                            controller.selectedJalan.value!.kondisiJalan!
-                                .length, (index) {
-                          var data = controller
-                              .selectedJalan.value!.kondisiJalan![index];
-                          var percent = data.values.first /
-                              controller.selectedJalan.value!.kondisiJalan!
-                                  .map((e) => e.values.reduce(
-                                      (value, element) => value + element))
-                                  .reduce((value, element) => value + element);
-                          var max = (percent *
-                                  controller.selectedPoly.value!.points.length)
-                              .round();
-                          var ltlng = <LatLng>[];
-                          for (var i = controller.generated.length;
-                              i < (controller.generated.length) + max;
-                              i++) {
-                            if (i <
-                                controller.selectedPoly.value!.points.length) {
-                              ltlng.add(
-                                  controller.selectedPoly.value!.points[i]);
-                            }
-                          }
+                        polylines: controller.selectedPoly.value!
+                            .map((e) => TaggedPolyline(
+                                  tag: "",
+                                  // An optional tag to distinguish polylines in callback
+                                  borderColor: Colors.black,
+                                  borderStrokeWidth: 0.9,
+                                  points: e.points,
+                                  color: e.color,
+                                  strokeWidth: 5.0,
+                                ))
+                            .toList(),
+                        // List.generate(
+                        //     controller.selectedJalan.value!.kondisiJalan!
+                        //         .length, (index) {
+                        //   var data = controller
+                        //       .selectedJalan.value!.kondisiJalan![index];
+                        //   var percent = data.values.first /
+                        //       controller.selectedJalan.value!.kondisiJalan!
+                        //           .map((e) => e.values.reduce(
+                        //               (value, element) => value + element))
+                        //           .reduce((value, element) => value + element);
+                        //   var max = (percent *
+                        //           controller.selectedPoly.value!.points.length)
+                        //       .round();
+                        //   var ltlng = <LatLng>[];
+                        //   for (var i = controller.generated.length;
+                        //       i < (controller.generated.length) + max;
+                        //       i++) {
+                        //     if (i <
+                        //         controller.selectedPoly.value!.points.length) {
+                        //       ltlng.add(
+                        //           controller.selectedPoly.value!.points[i]);
+                        //     }
+                        //   }
 
-                          controller.generated.addAll(
-                              List.generate(ltlng.length, (index) => 1));
-                          return TaggedPolyline(
-                            tag: "",
-                            // An optional tag to distinguish polylines in callback
-                            borderColor: Colors.black,
-                            borderStrokeWidth: 0.9,
-                            points: ltlng,
-                            color: kondisiColorString(data.keys.first),
-                            strokeWidth: 5.0,
-                          );
-                        }),
+                        //   controller.generated.addAll(
+                        //       List.generate(ltlng.length, (index) => 1));
+                        //   return TaggedPolyline(
+                        //     tag: "",
+                        //     // An optional tag to distinguish polylines in callback
+                        //     borderColor: Colors.black,
+                        //     borderStrokeWidth: 0.9,
+                        //     points: ltlng,
+                        //     color: kondisiColorString(data.keys.first),
+                        //     strokeWidth: 5.0,
+                        //   );
+                        // }),
                         onTap: (polylines, tapPosition) {
                           controller.clearPop();
                         },
