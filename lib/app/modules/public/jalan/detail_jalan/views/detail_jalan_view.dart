@@ -130,8 +130,8 @@ class DetailJalanView extends GetView<DetailJalanController> {
                 style: buttonStyle(color: Colors.blue),
                 onPressed: () {
                   launchUrlString(
-                    "https://maps.google.com/?q=${Get.find<CoreController>().jalanDetailGroupByRuas[controller.argument.noRuas]?.latAwal},${Get.find<CoreController>().jalanDetailGroupByRuas[controller.argument.noRuas]?.lonAwal}",
-                  );
+                      "https://maps.google.com/?q=${Get.find<CoreController>().jalanDetailGroupByRuas[controller.argument.noRuas]?.latAwal},${Get.find<CoreController>().jalanDetailGroupByRuas[controller.argument.noRuas]?.lonAwal}",
+                      mode: LaunchMode.externalApplication);
                 }, //=> controller.linked(map.Coords(-7.749133, 110.488999), "KLURAK"),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

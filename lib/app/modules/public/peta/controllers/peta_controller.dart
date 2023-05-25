@@ -21,17 +21,54 @@ class PetaController extends GetxController {
   Rx<List<TaggedPolyline>?> selectedPoly = Rx(null);
   RxList<int> generated = RxList([]);
 
+  var polyLinesProvinsi = List.generate(
+      Get.find<CoreController>().geoJsonParserJalanProvinsi.length, (index) {
+    List<LatLng> x = [];
+    var geo = Get.find<CoreController>().geoJsonParserJalanProvinsi[index];
+
+    for (List<double> element in geo.coordinate) {
+      x.add(LatLng(element[1], element[0]));
+    }
+    return Polyline(
+      // An optional tag to distinguish polylines in callback
+      borderColor: Colors.grey,
+      borderStrokeWidth: 0.0,
+      points: x,
+      color: Colors.pink,
+      strokeWidth: 3.0,
+    );
+  });
+
+  var polyLinesNasional = List.generate(
+      Get.find<CoreController>().geoJsonParserJalanNasional.length, (index) {
+    List<LatLng> x = [];
+    var geo = Get.find<CoreController>().geoJsonParserJalanNasional[index];
+
+    for (List<double> element in geo.coordinate) {
+      x.add(LatLng(element[1], element[0]));
+    }
+    return Polyline(
+      // An optional tag to distinguish polylines in callback
+      borderColor: Colors.grey,
+      borderStrokeWidth: 0.0,
+      points: x,
+      color: Colors.blue,
+      strokeWidth: 3.0,
+    );
+  });
+
   var polyLines =
       List.generate(Get.find<CoreController>().geoJsonParser.length, (index) {
     List<LatLng> x = [];
     var geo = Get.find<CoreController>().geoJsonParser[index];
+
     for (List<double> element in geo.singleListCoordinate) {
       x.add(LatLng(element[1], element[0]));
     }
     return TaggedPolyline(
       tag: Get.find<CoreController>().geoJsonParser[index].properties?.noRuas,
       // An optional tag to distinguish polylines in callback
-      borderColor: Colors.transparent,
+      borderColor: Colors.grey,
       borderStrokeWidth: 0.0,
       points: x,
       color: kondisiColor(Get.find<CoreController>()
@@ -42,7 +79,9 @@ class PetaController extends GetxController {
     );
   });
 
-  List<TaggedPolyline> get polyLines2 {
+  late List<TaggedPolyline> polyLines2;
+
+  List<TaggedPolyline> generatePolyline2() {
     var pol = <TaggedPolyline>[];
     for (var index = 0;
         index < Get.find<CoreController>().geoJsonParser.length;
@@ -52,6 +91,13 @@ class PetaController extends GetxController {
         List<LatLng> x = [];
         for (var cor in element) {
           x.add(LatLng(cor[1], cor[0]));
+        }
+        if (Get.find<CoreController>()
+                .geoJsonParser[index]
+                .properties
+                ?.noRuas ==
+            "17") {
+          print(x);
         }
         pol.add(TaggedPolyline(
           tag: Get.find<CoreController>()
@@ -73,13 +119,61 @@ class PetaController extends GetxController {
     return pol;
   }
 
-  List<TaggedPolyline> get coloredPolylines {
-    List<TaggedPolyline> polyline = [];
-    for (var poly in polyLines) {
-      if (poly.tag != "1" && poly.tag != "2") {
-        for (var poly2 in polyLines2
-            .where((element) => element.tag == poly.tag)
-            .toList()) {
+  late List<TaggedPolyline> coloredPolylines;
+
+  List<TaggedPolyline> generateColoredPolylines() {
+    {
+      List<TaggedPolyline> polyline = [];
+      for (var poly in polyLines) {
+        if (poly.tag != "1" && poly.tag != "2") {
+          for (var poly2 in polyLines2
+              .where((element) => element.tag == poly.tag)
+              .toList()) {
+            List<int> generated = [];
+            var temp = Get.find<CoreController>()
+                .kondisiJalanGroupedByTahun
+                .keys
+                .toList();
+            var jalanBaru = temp.map((e) => int.parse(e)).toList();
+            jalanBaru.sort();
+
+            var jalan = Get.find<CoreController>()
+                .kondisiJalanGroupedByTahun[jalanBaru.last.toString()];
+            var jalanPoly = jalan
+                ?.where((element) => element.noRuas == poly.tag)
+                .firstOrNull;
+            polyline.addAll(
+                List.generate(jalanPoly?.kondisiJalan?.length ?? 0, (index) {
+              var data = jalanPoly?.kondisiJalan![index];
+              var percent = (data?.values.first ?? 0) /
+                  (jalanPoly?.kondisiJalan
+                          ?.map((e) => e.values
+                              .reduce((value, element) => value + element))
+                          .reduce((value, element) => value + element) ??
+                      1);
+              var max = (percent * poly2.points.length).round();
+              var ltlng = <LatLng>[];
+              for (var i = generated.length;
+                  i < (generated.length) + max;
+                  i++) {
+                if (i < poly2.points.length) {
+                  ltlng.add(poly2.points[i]);
+                }
+              }
+
+              generated.addAll(List.generate(ltlng.length, (index) => 1));
+              return TaggedPolyline(
+                tag: poly2.tag,
+                // An optional tag to distinguish polylines in callback
+                borderColor: Colors.black,
+                borderStrokeWidth: 0.9,
+                points: ltlng,
+                color: kondisiColorString(data?.keys.first ?? '0'),
+                strokeWidth: 3.0,
+              );
+            }));
+          }
+        } else {
           List<int> generated = [];
           var temp = Get.find<CoreController>()
               .kondisiJalanGroupedByTahun
@@ -101,17 +195,17 @@ class PetaController extends GetxController {
                             .reduce((value, element) => value + element))
                         .reduce((value, element) => value + element) ??
                     1);
-            var max = (percent * poly2.points.length).round();
+            var max = (percent * poly.points.length).round();
             var ltlng = <LatLng>[];
             for (var i = generated.length; i < (generated.length) + max; i++) {
-              if (i < poly2.points.length) {
-                ltlng.add(poly2.points[i]);
+              if (i < poly.points.length) {
+                ltlng.add(poly.points[i]);
               }
             }
 
             generated.addAll(List.generate(ltlng.length, (index) => 1));
             return TaggedPolyline(
-              tag: poly2.tag,
+              tag: poly.tag,
               // An optional tag to distinguish polylines in callback
               borderColor: Colors.black,
               borderStrokeWidth: 0.9,
@@ -121,52 +215,15 @@ class PetaController extends GetxController {
             );
           }));
         }
-      } else {
-        List<int> generated = [];
-        var temp =
-            Get.find<CoreController>().kondisiJalanGroupedByTahun.keys.toList();
-        var jalanBaru = temp.map((e) => int.parse(e)).toList();
-        jalanBaru.sort();
-
-        var jalan = Get.find<CoreController>()
-            .kondisiJalanGroupedByTahun[jalanBaru.last.toString()];
-        var jalanPoly =
-            jalan?.where((element) => element.noRuas == poly.tag).firstOrNull;
-        polyline.addAll(
-            List.generate(jalanPoly?.kondisiJalan?.length ?? 0, (index) {
-          var data = jalanPoly?.kondisiJalan![index];
-          var percent = (data?.values.first ?? 0) /
-              (jalanPoly?.kondisiJalan
-                      ?.map((e) =>
-                          e.values.reduce((value, element) => value + element))
-                      .reduce((value, element) => value + element) ??
-                  1);
-          var max = (percent * poly.points.length).round();
-          var ltlng = <LatLng>[];
-          for (var i = generated.length; i < (generated.length) + max; i++) {
-            if (i < poly.points.length) {
-              ltlng.add(poly.points[i]);
-            }
-          }
-
-          generated.addAll(List.generate(ltlng.length, (index) => 1));
-          return TaggedPolyline(
-            tag: poly.tag,
-            // An optional tag to distinguish polylines in callback
-            borderColor: Colors.black,
-            borderStrokeWidth: 0.9,
-            points: ltlng,
-            color: kondisiColorString(data?.keys.first ?? '0'),
-            strokeWidth: 3.0,
-          );
-        }));
       }
+      return polyline;
     }
-    return polyline;
   }
 
   @override
   void onInit() {
+    polyLines2 = generatePolyline2();
+    coloredPolylines = generateColoredPolylines();
     super.onInit();
   }
 

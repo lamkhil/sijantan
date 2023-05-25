@@ -45,6 +45,22 @@ class PetaView extends GetView<PetaController> {
                   retinaMode: true,
                   userAgentPackageName: 'com.wastuanopama.sleman.sijantan2',
                 ),
+                PolylineLayer(
+                  polylines: controller.polyLinesNasional,
+                ),
+                PolylineLayer(
+                  polylines: controller.polyLinesProvinsi,
+                ),
+                TappablePolylineLayer(
+                    // Will only render visible polylines, increasing performance
+                    polylineCulling: true,
+                    pointerDistanceTolerance: 20,
+                    polylines: controller.polyLines2,
+                    onTap: (polylines, tapPosition) =>
+                        controller.selectJalan(polylines),
+                    onMiss: (tapPosition) {
+                      controller.clearPop();
+                    }),
                 TappablePolylineLayer(
                     // Will only render visible polylines, increasing performance
                     polylineCulling: true,
@@ -175,7 +191,7 @@ class PetaView extends GetView<PetaController> {
                         onMiss: (tapPosition) {
                           controller.clearPop();
                         })
-                    : const SizedBox.shrink())
+                    : const SizedBox.shrink()),
               ],
             ),
           ),

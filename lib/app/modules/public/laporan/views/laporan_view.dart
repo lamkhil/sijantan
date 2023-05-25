@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:sijantan2/app/modules/public/laporan/views/widget/laporan.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../global/utils/helper.dart';
 import '../controllers/laporan_controller.dart';
@@ -55,7 +56,13 @@ class LaporanView extends GetView<LaporanController> {
                                   circular: 5,
                                   shadow: true),
                               onPressed: () {
-                                Get.to(() => const LaporanViewJalan());
+                                //Get.to(() => const LaporanViewJalan());
+
+                                launchUrl(
+                                    Uri.parse(
+                                      "https://drive.google.com/file/d/10rIiLuhGhKll5-61AQrbRT9FZdX73X2m/view?usp=share_link",
+                                    ),
+                                    mode: LaunchMode.externalApplication);
                               },
                               child: Padding(
                                 padding:
@@ -88,7 +95,12 @@ class LaporanView extends GetView<LaporanController> {
                                   circular: 5,
                                   shadow: true),
                               onPressed: () {
-                                Get.to(() => const LaporanViewJembatan());
+                                //Get.to(() => const LaporanViewJembatan());
+                                launchUrl(
+                                    Uri.parse(
+                                      "https://sleman.wastuanopama.com/jembatan/jembatan_laporan",
+                                    ),
+                                    mode: LaunchMode.externalApplication);
                               },
                               child: Padding(
                                 padding:

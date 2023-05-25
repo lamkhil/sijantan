@@ -13,7 +13,8 @@ class MapModel {
     coordinate = json['geometry']['coordinates'] != null
         ? (json['geometry']['coordinates'] as List)
             .map((e) => (e as List)
-                .map((e) => (e as List).map((e) => e as double).toList())
+                .map((e) =>
+                    (e as List).map((e) => double.parse(e.toString())).toList())
                 .toList())
             .toList()
         : [];

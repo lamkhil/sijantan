@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:sijantan2/app/data/models/detail_spreadsheet_response.dart';
 import 'package:sijantan2/app/data/models/jalan_detail.dart';
 import 'package:sijantan2/app/data/models/jembatan_detail.dart';
+import 'package:sijantan2/app/data/models/map/map_model_line_string.dart';
 import 'package:sijantan2/app/data/services/sijantan_service.dart';
 import 'package:sijantan2/app/data/services/spreadsheet_service.dart';
 
@@ -15,6 +16,10 @@ import '../../data/models/map/map_model.dart';
 
 class CoreController extends GetxController {
   RxList<MapModel> geoJsonParser = <MapModel>[].obs;
+  RxList<MapModelLineString> geoJsonParserJalanProvinsi =
+      <MapModelLineString>[].obs;
+  RxList<MapModelLineString> geoJsonParserJalanNasional =
+      <MapModelLineString>[].obs;
   GeoJsonParser geoJsonParser2 = GeoJsonParser();
   Rx<DetailSpreadSheetResponse?> detailData = Rx(null);
 
@@ -152,13 +157,31 @@ class CoreController extends GetxController {
 
   Future<void> mapData() async {
     List temporary = [];
-    final data =
-        await rootBundle.loadString('assets/json/Jalan_Kabupaten.geojson');
+    final data = await rootBundle.loadString('assets/json/map.geojson');
     geoJsonParser2.parseGeoJsonAsString(data);
     Map<String, dynamic> sample = await jsonDecode(data);
     sample["features"].forEach((element) => temporary.add(element));
     for (var element in temporary) {
       geoJsonParser.add(MapModel.fromJson(element));
+    }
+    List temporary2 = [];
+    final data2 =
+        await rootBundle.loadString('assets/json/jalan_nasional.geojson');
+    geoJsonParser2.parseGeoJsonAsString(data2);
+    Map<String, dynamic> sample2 = await jsonDecode(data2);
+    sample2["features"].forEach((element) => temporary2.add(element));
+    for (var element in temporary2) {
+      geoJsonParserJalanNasional.add(MapModelLineString.fromJson(element));
+    }
+
+    List temporary3 = [];
+    final data3 =
+        await rootBundle.loadString('assets/json/jalan_provinsi.geojson');
+    geoJsonParser2.parseGeoJsonAsString(data3);
+    Map<String, dynamic> sample3 = await jsonDecode(data3);
+    sample3["features"].forEach((element) => temporary3.add(element));
+    for (var element in temporary3) {
+      geoJsonParserJalanProvinsi.add(MapModelLineString.fromJson(element));
     }
   }
 }

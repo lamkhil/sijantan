@@ -44,6 +44,7 @@ class DetailJalanController extends GetxController
         .geoJsonParser
         .where((p0) => p0.properties?.noRuas == argument.noRuas)
         .firstOrNull;
+    print("kondisi:${argument.jalan.kondisiJalan!.length}");
     selectedPoly.value =
         List.generate(argument.jalan.kondisiJalan!.length, (index) {
       var data = argument.jalan.kondisiJalan![index];
